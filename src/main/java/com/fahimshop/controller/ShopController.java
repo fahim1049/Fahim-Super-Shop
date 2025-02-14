@@ -21,4 +21,10 @@ public class ShopController {
 
         return "login";
     }
+
+    @GetMapping(path =  "/products")
+    public String products() {
+
+        return "product";
+    }
 }
