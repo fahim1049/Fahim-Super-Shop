@@ -27,4 +27,10 @@ public class ShopController {
 
         return "product";
     }
+
+    @GetMapping(path =  "/product")
+    public String product() {
+
+        return "view_product";
+    }
 }
