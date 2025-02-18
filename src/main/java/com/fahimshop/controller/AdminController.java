@@ -4,10 +4,18 @@ import com.fahimshop.model.Category;
 import com.fahimshop.service.CategoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Controller
 @RequestMapping(path = "/admin")
@@ -29,26 +37,35 @@ public class AdminController {
     public String category() {
         return "admin/category";
     }
+
     @PostMapping("/saveCategory")
 
-    public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) {
+    public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
 
-       String imageName =  file!= null ? file.getOriginalFilename(): "default.jpg";
+        String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
         category.setImageName(imageName);
 
         Boolean existCategory = categoryService.existCategory(category.getName());
-        if(existCategory) {
-            session.setAttribute("errorMsg","Category already exist");
-        }
-        else {
+        if (existCategory) {
+            session.setAttribute("errorMsg", "Category already exist");
+        } else {
 
             Category saveCategory = categoryService.save(category);
-            if(ObjectUtils.isEmpty(saveCategory)){
+            if (ObjectUtils.isEmpty(saveCategory)) {
 
-                session.setAttribute("errorMsg","Not saved ! internal server error");
-            }else{
+                session.setAttribute("errorMsg", "Not saved ! internal server error");
+            } else {
 
-                session.setAttribute("succMsg","Category saved successfully");
+                File saveFile = new ClassPathResource("static/img").getFile();
+
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+                        + file.getOriginalFilename());
+
+                System.out.println(path);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+
+                session.setAttribute("succMsg", "Category saved successfully");
 
             }
 

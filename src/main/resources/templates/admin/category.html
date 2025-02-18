@@ -16,10 +16,14 @@
                         <p class="fs-4">Add Category</p>
                         <th:block th:if="${session.succMsg}">
                             <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commonServiceimpl.removeSessionMessage()}"></th:block>
                         </th:block>
+
                         <th:block th:if="${session.errorMsg}">
                             <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceimpl.removeSessionMessage()}"></th:block>
                         </th:block>
+
 
                     </div>
                     <div class="card-body">
