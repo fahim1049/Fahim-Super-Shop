@@ -52,7 +52,7 @@ public class AdminController {
             session.setAttribute("errorMsg", "Category already exist");
         } else {
 
-            Category saveCategory = categoryService.save(category);
+            Category saveCategory = categoryService.saveCategory(category);
             if (ObjectUtils.isEmpty(saveCategory)) {
 
                 session.setAttribute("errorMsg", "Not saved ! internal server error");
@@ -71,6 +71,19 @@ public class AdminController {
 
             }
 
+        }
+
+        return "redirect:/admin/category";
+    }
+
+    @GetMapping("/deleteCategory/{id}")
+    public String deleteCategory(@PathVariable int id, HttpSession session) {
+        Boolean deleteCategory = categoryService.deleteCategory(id);
+
+        if (deleteCategory) {
+            session.setAttribute("succMsg", "category delete success");
+        } else {
+            session.setAttribute("errorMsg", "something wrong on server");
         }
 
         return "redirect:/admin/category";
