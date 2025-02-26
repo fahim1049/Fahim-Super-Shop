@@ -58,7 +58,7 @@ public class AdminController {
                 session.setAttribute("errorMsg", "Not saved ! internal server error");
             } else {
 
-                File saveFile = new ClassPathResource("static/img").getFile();
+                File saveFile = new ClassPathResource("static/images").getFile();
 
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
                         + file.getOriginalFilename());
@@ -88,5 +88,29 @@ public class AdminController {
 
         return "redirect:/admin/category";
     }
+
+    @GetMapping("/loadEditCategory/{id}")
+    public String loadEditCategory(@PathVariable int id, Model model) {
+        model.addAttribute("category",categoryService.getCategoryById(id));
+        return "admin/edit_category";
+    }
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category,@RequestParam("file") MultipartFile file, HttpSession session)   {
+ Category oldocategory =   categoryService.getCategoryById(category.getId());
+ String imageName = file.isEmpty() ? oldocategory.getImageName(): file.getOriginalFilename();
+ if (ObjectUtils.isEmpty(category)) {
+
+     oldocategory.setName(category.getName());
+     oldocategory.setIsActive(category.getIsActive());
+     oldocategory.setImageName(imageName);
+ }
+    Category updateCategory = categoryService.saveCategory(oldocategory);
+    if(!ObjectUtils.isEmpty(updateCategory)) {
+        session.setAttribute("succMsg", "category update success");
+    }else {
+        session.setAttribute("errorMsg", "something wrong on server");
+    }
+       return "redirect:/admin/loadEditCategory" +category.getId();
+}
 
 }
