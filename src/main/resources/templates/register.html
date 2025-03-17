@@ -19,9 +19,19 @@
                     <div class="card-header">
                         <p class="fs-4 text-center">Register</p>
 
+                        <th:block th:if="${session.succMsg}">
+                            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commonServiceimpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceimpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form action="/saveUser" enctype="multipart/form-data" method="post">
                             <div class="row">
                             <div class="col">
                                 <label class="form-label">Full Name</label> <input required
@@ -84,7 +94,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Profile Image</label> <input
-                                    class="form-control" name="img" type="file">
+                                    class="form-control" name="images" type="file">
                             </div>
 
 
